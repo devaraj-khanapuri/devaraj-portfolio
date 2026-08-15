@@ -1,0 +1,10 @@
+const q=s=>document.querySelector(s), qa=s=>[...document.querySelectorAll(s)];
+const toggle=q(".nav-toggle"), links=q(".nav-links");
+toggle?.addEventListener("click",()=>links.classList.toggle("open"));
+qa(".nav-links a").forEach(a=>a.addEventListener("click",()=>links.classList.remove("open")));
+const observer=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("visible");observer.unobserve(e.target)}}),{threshold:.12});
+qa(".reveal").forEach(e=>observer.observe(e));
+let roles=["Full-Stack Developer","MCA Student","Software Developer"],ri=0,ci=0,del=false;
+function type(){let t=q("#typed"),w=roles[ri];t.textContent=del?w.slice(0,--ci):w.slice(0,++ci);let d=del?45:75;if(!del&&ci===w.length){del=true;d=1300}else if(del&&ci===0){del=false;ri=(ri+1)%roles.length;d=300}setTimeout(type,d)}type();
+q("#year").textContent=new Date().getFullYear();
+async function repos(){let el=q("#repos");try{let r=await fetch("https://api.github.com/users/devaraj-khanapuri/repos?sort=updated&per_page=5");if(!r.ok)throw 0;let data=await r.json();el.innerHTML=data.map(x=>`<div class="repo"><div><h4>${esc(x.name)}</h4><p>${esc(x.description||"Public repository")}</p></div><a href="${x.html_url}" target="_blank">↗</a></div>`).join("")}catch{el.innerHTML='<div class="repo"><p>Unable to load repositories. <a href="https://github.com/devaraj-khanapuri" target="_blank">Open GitHub ↗</a></p></div>'}}function esc(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}repos();
